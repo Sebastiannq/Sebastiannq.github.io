@@ -13,12 +13,25 @@
       <div class="card-top">
         <div class="wallet-address">
           <span></span>
-          <span>Sebastian's pay</span>
+          <span>Sebastian's Wallet</span>
         </div>
         <div class="top-icons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            <line x1="7" y1="12" x2="17" y2="12"></line>
           </svg>
           <div class="divider"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
           </svg>
         </div>
       </div>
@@ -76,25 +89,62 @@
 
   <!-- Script interactivo -->
   <script>
-    // Precarga la fecha de hoy
+    // Precarga la fecha de hoy al cargar la página
     const fechaInput = document.getElementById('fecha');
-    fechaInput.value = new Date().toISOString().split('T')[0];
+    if (fechaInput) {
+      fechaInput.value = new Date().toISOString().split('T')[0];
+    }
 
-    document.getElementById('gastoForm').addEventListener('submit', function(e) {
+    document.getElementById('gastoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const btn = document.getElementById('btnEnviar');
 
-        // Animación de éxito
-        btn.textContent = "¡Aprobado!";
-        btn.classList.add('success');
+        // 1. Capturar los valores de los inputs
+        const monto = document.getElementById('monto').value;
+        const fecha = document.getElementById('fecha').value;
+        const descripcion = document.getElementById('descripcion').value;
+        const categoria = document.getElementById('categoria').value;
 
-        setTimeout(() => {
-            btn.textContent = "Registrar Movimiento";
-            btn.classList.remove('success');
-            document.getElementById('gastoForm').reset();
-            fechaInput.value = new Date().toISOString().split('T')[0];
-        }, 2000);
+        // Estado de carga para que se vea interactivo
+        btn.textContent = "Enviando...";
+
+        try {
+            // 2. IMPORTANTE: Pega aquí la URL que te genere Make.com
+            const webhookUrl = 'https://hook.us2.make.com/76xlp7ubhgc83zy9mjk80bumbhgfoam9';
+
+            // 3. Petición POST para enviar los datos a Make -> Notion
+            await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    monto: Number(monto),
+                    fecha: fecha,
+                    descripcion: descripcion,
+                    categoria: categoria
+                })
+            });
+
+            // 4. Animación de éxito estilo Apple
+            btn.textContent = "¡Aprobado!";
+            btn.classList.add('success');
+
+            // 5. Resetear el formulario después de 2 segundos
+            setTimeout(() => {
+                btn.textContent = "Registrar Movimiento";
+                btn.classList.remove('success');
+                document.getElementById('gastoForm').reset();
+                // Volver a poner la fecha de hoy
+                fechaInput.value = new Date().toISOString().split('T')[0];
+            }, 2000);
+
+        } catch (error) {
+            console.error("Error al enviar el gasto:", error);
+            btn.textContent = "Error de conexión ❌";
+            setTimeout(() => {
+                btn.textContent = "Registrar Movimiento";
+            }, 2000);
+        }
     });
   </script>
 
