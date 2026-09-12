@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Wallet Gasticos - Apple Pay Concept</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page">
+    <div class="card">
+      <!-- Cabecera de la Tarjeta -->
+      <div class="card-top">
+        <div class="wallet-address">
+          <span></span>
+          <span>Sebastian's pay</span>
+        </div>
+        <div class="top-icons">
+            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+          </svg>
+          <div class="divider"></div>
+          </svg>
+        </div>
+      </div>
+
+      <!-- FORMULARIO DE GASTOS -->
+      <form id="gastoForm">
+
+        <!-- Monto gigante estilo Balance -->
+        <div class="form-group monto-group">
+          <label class="label" for="monto">Monto del Gasto</label>
+          <input type="number" id="monto" class="input-monto" placeholder="$0.00" step="any" required>
+        </div>
+
+        <!-- Fecha -->
+        <div class="form-group">
+          <input type="date" id="fecha" class="input-standard" required>
+        </div>
+
+        <!-- Descripción -->
+        <div class="form-group">
+          <input type="text" id="descripcion" class="input-standard" placeholder="¿En qué gastaste?" required>
+        </div>
+
+        <!-- Categoría -->
+        <div class="form-group">
+          <select id="categoria" class="input-standard" required>
+            <option value="" disabled selected>Selecciona una categoría...</option>
+            <option value="Comida">Comida</option>
+            <option value="Lujitos">Lujitos</option>
+            <option value="Juegos">Juegos</option>
+            <option value="Viajes/uber">Viajes/uber</option>
+            <option value="Deudas">Deudas</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Set up">Set up</option>
+          </select>
+        </div>
+
+        <!-- Botón de Envío -->
+        <button type="submit" id="btnEnviar" class="btn-submit">
+          Registrar Movimiento
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Logo Inferior -->
+    <div class="brand">
+      <div class="brand-logo">
+        <span></span>
+        <span>Pay</span>
+      </div>
+      <div class="brand-sub">GASTICOS TRACKER</div>
+    </div>
+  </div>
+
+  <!-- Script interactivo -->
+  <script>
+    // Precarga la fecha de hoy
+    const fechaInput = document.getElementById('fecha');
+    fechaInput.value = new Date().toISOString().split('T')[0];
+
+    document.getElementById('gastoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('btnEnviar');
+
+        // Animación de éxito
+        btn.textContent = "¡Aprobado!";
+        btn.classList.add('success');
+
+        setTimeout(() => {
+            btn.textContent = "Registrar Movimiento";
+            btn.classList.remove('success');
+            document.getElementById('gastoForm').reset();
+            fechaInput.value = new Date().toISOString().split('T')[0];
+        }, 2000);
+    });
+  </script>
+
+</body>
+</html>
