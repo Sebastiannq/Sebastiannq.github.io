@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Wallet Gasticos - Apple Pay Concept</title>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -42,7 +43,7 @@
         <!-- Monto gigante estilo Balance -->
         <div class="form-group monto-group">
           <label class="label" for="monto">Monto del Gasto</label>
-          <input type="number" id="monto" class="input-monto" placeholder="$0.00" step="any" required>
+          <input type="number" id="monto" class="input-monto" placeholder="$0.00" step="any" required inputmode="decimal">
         </div>
 
         <!-- Fecha -->
@@ -50,9 +51,17 @@
           <input type="date" id="fecha" class="input-standard" required>
         </div>
 
-        <!-- Descripción -->
+        <!-- Método de pago -->
         <div class="form-group">
-          <input type="text" id="descripcion" class="input-standard" placeholder="¿En qué gastaste?" required>
+          <select id="metodoPago" class="input-standard" required>
+            <option value="" disabled selected>Método de pago...</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta débito">Tarjeta débito</option>
+            <option value="Tarjeta crédito">Tarjeta crédito</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Nequi/Daviplata">Nequi/Daviplata</option>
+            <option value="Otro">Otro</option>
+          </select>
         </div>
 
         <!-- Categoría -->
@@ -103,14 +112,14 @@
         // 1. Capturar los valores de los inputs
         const monto = document.getElementById('monto').value;
         const fecha = document.getElementById('fecha').value;
-        const descripcion = document.getElementById('descripcion').value;
+        const metodoPago = document.getElementById('metodoPago').value;
         const categoria = document.getElementById('categoria').value;
 
         // Estado de carga para que se vea interactivo
         btn.textContent = "Enviando...";
 
         try {
-            // 2. IMPORTANTE: Pega aquí la URL que te genere Make.com
+            // 2. URL del webhook de Make.com
             const webhookUrl = 'https://hook.us2.make.com/76xlp7ubhgc83zy9mjk80bumbhgfoam9';
 
             // 3. Petición POST para enviar los datos a Make -> Notion
@@ -120,7 +129,7 @@
                 body: JSON.stringify({
                     monto: Number(monto),
                     fecha: fecha,
-                    descripcion: descripcion,
+                    metodo_pago: metodoPago,
                     categoria: categoria
                 })
             });
